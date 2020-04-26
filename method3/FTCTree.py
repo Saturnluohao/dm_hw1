@@ -165,7 +165,6 @@ def get_dis(ftctree1, ftctree2):
 
     calculate_dis(inters_tree, union_tree, sim_dict, 1)  # 计算每个层级的相似系数
     level_sum = np.array(range(max(sim_dict.keys()) + 1)).sum()  # 计算层级数总和
-    # level_sum = np.array(range(5)).sum()  # 计算层级数总和
 
     for level in sim_dict.keys():  # 将各层级的相似度乘以对应的权重求和
         w = level / level_sum
@@ -198,8 +197,8 @@ def calculate_dis(inters_tree, union_tree, sim_dict, level):
         if key in union_keys:
             sims.append(inters_tree.get_freq(key) / union_freq_sum)
             calculate_dis(inters_tree.get_subtree(key), union_tree.get_subtree(key), sim_dict, level + 1)
-    # sim = np.array(sims).mean()
-    sim = np.array(sims).sum()
+    sim = np.array(sims).mean()
+    # sim = np.array(sims).sum()
     sim_dict[level] = sim
 
 
@@ -308,13 +307,15 @@ def get_cluster_center(tree_cluster):
     last_dist = 0
 
     while freq <= freqEnd:
-        if unchanged_time > 5:
+        if unchanged_time > 3:
             break
 
         utree = update_tree(utree, freq)
         dist = dis_sum(tree_cluster, utree)
-        if math.fabs(last_dist - dist) < 0.1:
+        if math.fabs(last_dist - dist) < 0.01:
             unchanged_time += 1
+        else:
+            unchanged_time = 0
 
         last_dist = dist
 

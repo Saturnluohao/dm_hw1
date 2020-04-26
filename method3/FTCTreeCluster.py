@@ -160,8 +160,8 @@ def bic_score(clusters, centers):
         for j in range(len(cluster)):
             dist = ftct.get_dis(cluster[j], center)
             dist_to_center_sum += (dist * dist)
-        # sigma_square = dist_to_center_sum * (Ni - C) / 2
-        sigma_square = dist_to_center_sum / Ni
+        sigma_square = dist_to_center_sum * (Ni - C) / 2
+        # sigma_square = dist_to_center_sum / Ni
 
         if Ni == 0 or N == 0 or sigma_square == 0 or C == 0:
             return -np.Inf
@@ -180,11 +180,14 @@ cluster_centers = []
 
 
 def split(cluster, center):
+    if len(cluster) <= 5:
+        clusters.append(cluster)
+        return
     my_kmeans_instance = run_two_means(cluster, 15)
     centers = my_kmeans_instance.get_centers()
     splited_clusters = my_kmeans_instance.get_clusters()
     if len(splited_clusters) == 1:
-        clusters.append(cluster[splited_clusters[0]])
+        clusters.append(cluster)
         return
 
     cluster1 = cluster[splited_clusters[0]]
